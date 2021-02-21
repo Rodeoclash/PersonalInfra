@@ -16,8 +16,6 @@ terraform {
     skip_credentials_validation = true
     skip_metadata_api_check     = true
     skip_region_validation      = true
-    access_key                  = "3XPOOHXB74WY6OSSAPXP"
-    secret_key                  = "945cZopJHv6wYJGJzhl55nJ3+VrBNoPSV9yKcfM/waA"
   }
 }
 
