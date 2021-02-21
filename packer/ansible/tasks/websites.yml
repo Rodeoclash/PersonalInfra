@@ -1,0 +1,46 @@
+---
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: "{{ caddy_sites_directory }}"
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+
+- name: Create caddy data volume
+  docker_volume:
+    name: caddy_data
+
+- name: Create caddy config volume
+  docker_volume:
+    name: caddy_config
+
+- name: Copy config to remote
+  copy:
+    src: './support/Caddyfile'
+    dest: "{{ caddy_file }}"
+    mode: 0600
+
+- name: Create websites network
+  docker_network:
+    name: websites
+
+- name: Start caddy reverse proxy
+  docker_container:
+    name: caddy
+    image: caddy:2.2.1
+    log_driver: json-file
+    restart_policy: unless-stopped
+    log_options:
+      'max-size': '5m'
+      'max-file': '3'
+    state: started
+    published_ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - "{{ caddy_file }}:/etc/caddy/Caddyfile"
+      - "{{ caddy_sites_directory }}:/etc/caddy/sites-enabled"
+      - 'caddy_config:/config'
+      - 'caddy_data:/data'
+    networks:
+      - name: websites
