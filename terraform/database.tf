@@ -11,6 +11,7 @@ resource "digitalocean_database_cluster" "personal" {
   version    = "12"
 }
 
+// astoria database
 resource "digitalocean_database_db" "astoria" {
   cluster_id = digitalocean_database_cluster.personal.id
   name       = "astoria"
@@ -21,11 +22,13 @@ resource "digitalocean_database_user" "astoria" {
   name       = "astoria"
 }
 
-resource "digitalocean_database_firewall" "astoria" {
+// volt database
+resource "digitalocean_database_db" "volt" {
   cluster_id = digitalocean_database_cluster.personal.id
+  name       = "volt"
+}
 
-  rule {
-    type  = "droplet"
-    value = digitalocean_droplet.personal-sites.id
-  }
+resource "digitalocean_database_user" "volt" {
+  cluster_id = digitalocean_database_cluster.personal.id
+  name       = "volt"
 }
